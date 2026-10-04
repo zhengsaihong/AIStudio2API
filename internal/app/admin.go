@@ -1302,12 +1302,17 @@ func (registry *requestRegistry) publish(event api.AdminEvent) {
 }
 
 func buildVersion() string {
+	if override := strings.TrimSpace(buildVersionOverride); override != "" {
+		return override
+	}
 	info, ok := debug.ReadBuildInfo()
 	if !ok || info.Main.Version == "" {
 		return "(devel)"
 	}
 	return info.Main.Version
 }
+
+var buildVersionOverride string
 
 func runtimeConfigDTO(cfg config.Config) api.RuntimeConfig {
 	return api.RuntimeConfig{

@@ -24,6 +24,7 @@ const driveUploadURL = "https://www.googleapis.com/upload/drive/v3/files?uploadT
 const driveResumableUploadURL = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id"
 const driveUploadChunkSize = 8 << 20
 const driveCleanupTimeout = 5 * time.Second
+const inlineMediaViaDrive = false
 
 // UploadRequest 表示一次 Drive 文件上传
 type UploadRequest struct {
@@ -707,6 +708,9 @@ func (s *PooledService) UploadInlineMediaToLease(
 	contents []Content,
 	temporary *TemporaryFileCopies,
 ) ([]Content, *TemporaryFileCopies, error) {
+	if !inlineMediaViaDrive {
+		return contents, temporary, nil
+	}
 	if s == nil || s.pool == nil || s.client == nil {
 		return nil, nil, fmt.Errorf("内联附件上传服务未初始化")
 	}

@@ -32,6 +32,7 @@ func NewHandler(service aistudio.Service, config Config) http.Handler {
 	s := &server{service: service, config: config, responseStates: newResponseStateStore(), thoughtSignatures: newThoughtSignatureStore()}
 	public := http.NewServeMux()
 	public.HandleFunc("GET /v1/models", s.handleOpenAIModels)
+	public.HandleFunc("GET /v1/models/{model...}", s.handleOpenAIModel)
 	public.HandleFunc("POST /v1/chat/completions", s.handleChatCompletions)
 	public.HandleFunc("POST /v1/responses", s.handleResponses)
 	public.HandleFunc("POST /v1/interactions", s.handleInteraction)
@@ -51,7 +52,7 @@ func NewHandler(service aistudio.Service, config Config) http.Handler {
 	public.HandleFunc("POST /v1/messages", s.handleAnthropicMessages)
 	public.HandleFunc("POST /v1/messages/count_tokens", s.handleAnthropicCountTokens)
 	public.HandleFunc("GET /v1beta/models", s.handleGeminiModels)
-	public.HandleFunc("GET /v1beta/models/{model}", s.handleGeminiModel)
+	public.HandleFunc("GET /v1beta/models/{model...}", s.handleGeminiModel)
 	public.HandleFunc("POST /v1beta/models/{action}", s.handleGeminiAction)
 	public.HandleFunc("GET /v1beta/operations/{operation}", s.handleGeminiVideoOperation)
 
